@@ -29,7 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('products', [ProductController::class, 'index']);
 
     Route::middleware('role:Seller')->group(function () {
-        // Seller routes
+        Route::apiResource('products', ProductController::class)->except(['index', 'show']);
     });
 
     Route::middleware('role:Buyer')->group(function () {

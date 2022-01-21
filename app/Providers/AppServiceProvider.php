@@ -33,5 +33,11 @@ class AppServiceProvider extends ServiceProvider
             fn($attribute, $value) => in_array($value, $coins),
             'Machine accepts only ' . implode(', ', $coins) . ' coins'
         );
+
+        Validator::extend(
+            'price',
+            fn($attribute, $value) => $value % 5 === 0,
+            'Price should be divisible by 5'
+        );
     }
 }
