@@ -20,4 +20,15 @@ class BalanceController extends Controller
             'balance' => $user->balance,
         ], 201);
     }
+
+    public function reset(Request $request): array
+    {
+        $user = $request->user();
+
+        $user->withdraw($user->balance);
+
+        return [
+            'balance' => 0,
+        ];
+    }
 }

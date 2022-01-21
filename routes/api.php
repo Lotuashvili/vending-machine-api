@@ -30,6 +30,9 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::middleware('role:Buyer')->group(function () {
-        Route::post('deposit', [BalanceController::class, 'deposit']);
+        Route::prefix('balance')->group(function () {
+            Route::post('deposit', [BalanceController::class, 'deposit']);
+            Route::post('reset', [BalanceController::class, 'reset']);
+        });
     });
 });
