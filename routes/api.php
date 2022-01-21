@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BalanceController;
 use App\Http\Controllers\Api\UserInfoController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,4 +24,12 @@ Route::prefix('auth')->group(function () {
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('user', UserInfoController::class);
+
+    Route::middleware('role:Seller')->group(function () {
+        // Seller routes
+    });
+
+    Route::middleware('role:Buyer')->group(function () {
+        Route::post('deposit', [BalanceController::class, 'deposit']);
+    });
 });
