@@ -26,7 +26,7 @@ Route::prefix('auth')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('user', UserInfoController::class);
 
-    Route::get('products', [ProductController::class, 'index']);
+    Route::apiResource('products', ProductController::class)->only(['index', 'show']);
 
     Route::middleware('role:Seller')->group(function () {
         Route::apiResource('products', ProductController::class)->except(['index', 'show']);
@@ -37,5 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('deposit', [BalanceController::class, 'deposit']);
             Route::post('reset', [BalanceController::class, 'reset']);
         });
+
+        Route::post('products/buy/{product}', [ProductController::class, 'buy']);
     });
 });
