@@ -27,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
     {
         JsonResource::withoutWrapping();
 
-        $coins = [5, 10, 20, 50, 100];
+        $coins = config('app.coins');
         Validator::extend(
             'coin',
             fn($attribute, $value) => in_array($value, $coins),

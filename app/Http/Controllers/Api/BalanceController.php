@@ -25,10 +25,38 @@ class BalanceController extends Controller
     {
         $user = $request->user();
 
-        $user->withdraw($user->balance);
+        $coins = config('app.coins');
+        rsort($coins);
+
+        $balance = $user->balance;
+
+        if ($balance <= 0) {
+            return [
+                'balance' => 0,
+                'change' => [],
+                'finalBalance' => 0,
+            ];
+        }
+
+        $change = [];
+
+        // Return the change with the highest coins possible
+        $finalBalance = array_reduce($coins, function ($balance, $coin) use (&$change) {
+            $amount = floor($balance / $coin);
+
+            if ($amount > 0) {
+                $change[$coin] = $amount;
+            }
+
+            return $balance - $amount * $coin;
+        }, $balance);
+
+        $user->withdraw($balance);
 
         return [
-            'balance' => 0,
+            'balance' => $balance,
+            'change' => $change,
+            'finalBalance' => $finalBalance,
         ];
     }
 }
