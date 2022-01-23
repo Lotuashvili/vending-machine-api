@@ -26,8 +26,11 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->input('email'))->firstOrFail();
 
+        $token = $user->createToken('API');
+
         return response()->json([
-            'token' => $user->createToken('API')->plainTextToken,
+            'token' => $token->plainTextToken,
+            'other_devices' => $user->otherTokens($token->accessToken)->exists(),
         ]);
     }
 
@@ -52,6 +55,13 @@ class AuthController extends Controller
     public function logout(Request $request): Response
     {
         $request->user()->currentAccessToken()->delete();
+
+        return response()->noContent();
+    }
+
+    public function logoutAll(Request $request): Response
+    {
+        $request->user()->otherTokens()->get()->each->delete();
 
         return response()->noContent();
     }
