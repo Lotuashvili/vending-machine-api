@@ -38,25 +38,13 @@ class BalanceController extends Controller
             ];
         }
 
-        $change = [];
-
-        // Return the change with the highest coins possible
-        $finalBalance = array_reduce($coins, function ($balance, $coin) use (&$change) {
-            $amount = floor($balance / $coin);
-
-            if ($amount > 0) {
-                $change[$coin] = $amount;
-            }
-
-            return $balance - $amount * $coin;
-        }, $balance);
-
+        $change = $user->change;
         $user->withdraw($balance);
 
         return [
             'balance' => $balance,
             'change' => $change,
-            'finalBalance' => $finalBalance,
+            'finalBalance' => 0,
         ];
     }
 }

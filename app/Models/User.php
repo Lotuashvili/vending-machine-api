@@ -99,4 +99,22 @@ class User extends Authenticatable
             'balance' => $this->balance + $amount,
         ]))->save();
     }
+
+    public function getChangeAttribute(): array
+    {
+        $balance = $this->balance;
+        $coins = config('app.coins');
+        rsort($coins);
+
+        return array_reduce($coins, function ($change, $coin) use (&$balance) {
+            $amount = floor($balance / $coin);
+
+            if ($amount > 0) {
+                $change[$coin] = $amount;
+                $balance -= $amount * $coin;
+            }
+
+            return $change;
+        }, []);
+    }
 }

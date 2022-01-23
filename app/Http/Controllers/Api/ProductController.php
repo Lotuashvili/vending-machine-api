@@ -60,7 +60,7 @@ class ProductController extends Controller
         $request->validate([
             'amount' => 'nullable|integer|min:1|max:' . $product->amount,
         ], [
-            'max' => 'Product has only :max items in stock',
+            'max' => 'Product has only :max item(s) in stock',
         ]);
 
         $price = $product->price;
@@ -81,6 +81,7 @@ class ProductController extends Controller
             'available' => $product->amount,
             'total_spent' => $total,
             'balance' => $user->balance,
+            'change' => $user->change,
         ], 201);
     }
 }
