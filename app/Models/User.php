@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -55,7 +56,27 @@ class User extends Authenticatable
     {
         $token = $except ?? $this->accessToken;
 
-        return $this->tokens()->when($token, fn($query) => $query->where('id', '!=', $token->id));
+        return $this->tokens()
+            ->when(
+                $token instanceof PersonalAccessToken,
+                fn($query) => $query->where('id', '!=', $token->id),
+                function (Builder $query) {
+                    // currentAccessToken() works weirdly and sometimes it returns another type of token
+                    // So let's scrape token from headers, which contains token ID and use it directly
+                    $token = request()->header('Authorization');
+
+                    if (!$token) {
+                        return $query;
+                    }
+
+                    $id = trim(explode('|', $token)[0], 'Bearer ');
+
+                    if (!$id) {
+                        return $query;
+                    }
+
+                    return $query->where('id', '!=', $id);
+                });
     }
 
     /**
