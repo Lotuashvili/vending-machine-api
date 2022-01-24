@@ -25,21 +25,12 @@ class BalanceController extends Controller
     {
         $user = $request->user();
 
-        $coins = config('app.coins');
-        rsort($coins);
-
         $balance = $user->balance;
-
-        if ($balance <= 0) {
-            return [
-                'balance' => 0,
-                'change' => [],
-                'finalBalance' => 0,
-            ];
-        }
-
         $change = $user->change;
-        $user->withdraw($balance);
+
+        if ($balance > 0) {
+            $user->withdraw($balance);
+        }
 
         return [
             'balance' => $balance,
