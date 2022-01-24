@@ -54,7 +54,7 @@ class ProductController extends Controller
     public function buy(Product $product, Request $request): JsonResponse
     {
         throw_unless($product->amount > 0, ValidationException::withMessages([
-            'product' => 'Product is not in stock',
+            'amount' => 'Product is not in stock',
         ]));
 
         $request->validate([
